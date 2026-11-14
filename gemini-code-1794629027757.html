@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mSąsiad – Urzędowy Portal Mediacji i Sąsiedzkiej Klarowności</title>
+    <style>
+        :root {
+            --gov-bg: #f3f4f6;
+            --gov-card: #ffffff;
+            --gov-border: #d1d5db;
+            --gov-border-red: #ef4444;
+            --gov-text-main: #1f2937;
+            --gov-text-muted: #4b5563;
+            --gov-blue: #1d4ed8;
+            --gov-blue-hover: #1e40af;
+            --gov-red-bg: #fef2f2;
+            --gov-green-bg: #f0fdf4;
+            --gov-green: #15803d;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--gov-bg);
+            color: var(--gov-text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 16px;
+        }
+
+        /* Oficjalny nagłówek rządowy */
+        header {
+            width: 100%;
+            max-width: 800px;
+            background: var(--gov-card);
+            border: 1px solid var(--gov-border);
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .gov-branding {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .gov-flag-text {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--gov-text-muted);
+            font-weight: 700;
+        }
+
+        .gov-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--gov-text-main);
+        }
+
+        .gov-badge-top {
+            background: #eff6ff;
+            color: var(--gov-blue);
+            border: 1px solid #bfdbfe;
+            font-size: 0.75rem;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        main {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .section-header {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--gov-text-muted);
+            margin-bottom: 4px;
+        }
+
+        /* Karta urzędowa / profilu */
+        .gov-card {
+            background: var(--gov-card);
+            border: 1px solid var(--gov-border);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .gov-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .profile-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .profile-meta {
+            font-size: 0.85rem;
+            color: var(--gov-text-muted);
+            margin-top: 2px;
+        }
+
+        /* Status weryfikacji mObywatel */
+        .mobywatel-status {
+            background: var(--gov-green-bg);
+            color: var(--gov-green);
+            border: 1px solid #bbf7d0;
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Kontener na wideo-wizytówkę (Zgodny z wymogami) */
+        .video-upload-box {
+            border: 1px dashed var(--gov-border);
+            background: #f9fafb;
+            padding: 16px;
+            border-radius: 6px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .video-upload-box label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--gov-blue);
+            cursor: pointer;
+        }
+
+        .video-upload-box input[type="file"] {
+            display: none;
+        }
+
+        .video-info-note {
+            font-size: 0.75rem;
+            color: var(--gov-text-muted);
+            line-height: 1.3;
+        }
+
+        /* Przyciski akcji w stylu urzędowym */
+        .card-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 4px;
+        }
+
+        .btn-gov {
+            flex: 1;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid transparent;
+            text-align: center;
+            transition: background 0.15s;
+        }
+
+        .btn-gov-primary {
+            background: #ffffff;
+            color: var(--gov-text-main);
+            border-color: var(--gov-border);
+        }
+
+        .btn-gov-primary:hover {
+            background: #f3f4f6;
+        }
+
+        .btn-gov-alert {
+            background: var(--gov-red-bg);
+            color: #991b1b;
+            border-color: #fecaca;
+        }
+
+        .btn-gov-alert:hover {
+            background: #fee2e2;
+        }
+
+        /* System Modali z czerwoną/szarą obwódką (Friction-based UX) */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+
+        .modal-backdrop.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .gov-modal {
+            background: var(--gov-card);
+            border: 2px solid var(--gov-border-red); /* Charakterystyczna obwódka refleksyjna */
+            border-radius: 8px;
+            width: 100%;
+            max-width: 440px;
+            padding: 24px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .gov-modal.neutral {
+            border-color: var(--gov-border);
+        }
+
+        .modal-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .modal-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .modal-close-btn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: var(--gov-text-muted);
+        }
+
+        .modal-desc {
+            font-size: 0.85rem;
+            color: var(--gov-text-muted);
+            line-height: 1.4;
+        }
+
+        .reflection-box {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            color: #92400e;
+        }
+
+        .modal-footer-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Oficjalny nagłówek rządowy -->
+    <header>
+        <div class="gov-branding">
+            <span class="gov-flag-text">Rzeczpospolita Polska • Portal Obywatelski</span>
+            <span class="gov-title">mSąsiad (Klaro)</span>
+        </div>
+        <button class="gov-badge-top" onclick="openModal('infoModal')">🛡️ Zasady i mObywatel</button>
+    </header>
+
+    <main>
+        <div class="section-header">Katalog spraw i weryfikacja sąsiedzka</div>
+
+        <!-- Karta Sąsiada 1 -->
+        <div class="gov-card">
+            <div class="gov-card-header">
+                <div>
+                    <div class="profile-title">Sprawa: Lokalna uciążliwość akustyczna</div>
+                    <div class="profile-meta">Sąsiad: Klatka B, Lok. 14 | Status sprawy: Otwarta do mediacji</div>
+                </div>
+                <div class="mobywatel-status">
+                    ✓ mObywatel Zweryfikowany
+                </div>
+            </div>
+
+            <!-- Moduł wideo-wizytówki (Zero-retention, limit 3-5 filmików) -->
+            <div class="video-upload-box">
+                <label for="videoInput1">📁 Wgraj wideo-wizytówkę (Limit: max 3 pliki, auto-usuwanie)</label>
+                <input type="file" id="videoInput1" accept="video/*" onchange="handleVideoUpload(this, 'status1')">
+                <div class="video-info-note" id="status1">Brak załączonego pliku wideo. Wideo kasuje się automatycznie po zamknięciu sprawy.</div>
+            </div>
+
+            <div class="card-actions">
+                <button class="btn-gov btn-gov-primary" onclick="openActionModal('Podziękowanie za pomoc', 'Sąsiad (Klatka B)')">👍 Podziękuj za pomoc</button>
+                <button class="btn-gov btn-gov-alert" onclick="openActionModal('Zgłoś rozczarowanie', 'Sąsiad (Klatka B)')">👎 Zgłoś uwagą (Refleksja)</button>
+            </div>
+        </div>
+
+        <!-- Karta Sąsiada 2 -->
+        <div class="gov-card">
+            <div class="gov-card-header">
+                <div>
+                    <div class="profile-title">Sprawa: Porządek w przestrzeni wspólnej</div>
+                    <div class="profile-meta">Sąsiad: Klatka A, Lok. 4 | Status sprawy: Otwarta do mediacji</div>
+                </div>
+                <div class="mobywatel-status">
+                    ✓ mObywatel Zweryfikowany
+                </div>
+            </div>
+
+            <div class="video-upload-box">
+                <label for="videoInput2">📁 Wgraj wideo-wizytówkę (Limit: max 3 pliki, auto-usuwanie)</label>
+                <input type="file" id="videoInput2" accept="video/*" onchange="handleVideoUpload(this, 'status2')">
+                <div class="video-info-note" id="status2">Brak załączonego pliku wideo.</div>
+            </div>
+
+            <div class="card-actions">
+                <button class="btn-gov btn-gov-primary" onclick="openActionModal('Podziękowanie za pomoc', 'Sąsiad (Klatka A)')">👍 Podziękuj za pomoc</button>
+                <button class="btn-gov btn-gov-alert" onclick="openActionModal('Zgłoś rozczarowanie', 'Sąsiad (Klatka A)')">👎 Zgłoś uwagą (Refleksja)</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Informacyjny / mObywatel -->
+    <div id="infoModal" class="modal-backdrop">
+        <div class="gov-modal neutral">
+            <div class="modal-header-row">
+                <div class="modal-title">Standard Bezpieczeństwa Państwowego</div>
+                <button class="modal-close-btn" onclick="closeModal('infoModal')">&times;</button>
+            </div>
+            <div class="modal-desc">
+                <strong>mObywatel Integration:</strong> Weryfikacja tożsamości odbywa się kryptograficznie. System potwierdza wyłącznie przynależność do lokalizacji (okręgu/klatki) bez pobierania numeru PESEL ani przechowywania danych osobowych.
+            </div>
+            <div class="modal-desc">
+                <strong>Friction-based UX & Zero-Retention:</strong> Brak anonimowego hejtu. Wideo-wizytówki podlegają rygorystycznemu limitowi (3-5 plików) i są bezpowrotnie kasowane w chwili domknięcia sprawy.
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Akcji (Podziękowanie / Rozczarowanie z elementem refleksji) -->
+    <div id="actionModal" class="modal-backdrop">
+        <div class="gov-modal" id="actionModalBorder">
+            <div class="modal-header-row">
+                <div class="modal-title" id="modalActionTitle">Domknięcie Sprawy</div>
+                <button class="modal-close-btn" onclick="closeModal('actionModal')">&times;</button>
+            </div>
+            <div class="modal-desc" id="modalActionDesc">
+                Wymagana chwila refleksji przed zatwierdzeniem statusu relacji.
+            </div>
+            
+            <div class="reflection-box" id="reflectionBoxText">
+                ⚠️ Zgodnie z zasadą klarowności, ocena i zgłoszenie uwagi są rejestrowane oficjalnie w celu rozstrzygnięcia sporu, bez możliwości publikowania anonimowych obelg.
+            </div>
+
+            <div class="modal-footer-actions">
+                <button class="btn-gov btn-gov-primary" style="background:#1d4ed8; color:#ffffff; padding: 12px;" onclick="confirmAction()">Zatwierdź oficjalnie status</button>
+                <button class="btn-gov btn-gov-primary" onclick="closeModal('actionModal')">Anuluj / Wróć</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentActionType = '';
+        let currentTarget = '';
+
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        function openActionModal(type, target) {
+            currentActionType = type;
+            currentTarget = target;
+            
+            document.getElementById('modalActionTitle').innerText = `${type}: ${target}`;
+            
+            const borderBox = document.getElementById('actionModalBorder');
+            if(type.includes('Rozczarowanie')) {
+                borderBox.style.borderColor = 'var(--gov-border-red)';
+                document.getElementById('reflectionBoxText').style.display = 'block';
+            } else {
+                borderBox.style.borderColor = 'var(--gov-blue)';
+                document.getElementById('reflectionBoxText').style.display = 'none';
+            }
+            
+            openModal('actionModal');
+        }
+
+        function handleVideoUpload(input, statusId) {
+            const statusEl = document.getElementById(statusId);
+            if (input.files && input.files[0]) {
+                const fileName = input.files[0].name;
+                statusEl.innerHTML = `✓ Załączono plik: <strong>${fileName}</strong> (Gotowy do szyfrowanej weryfikacji).`;
+                statusEl.style.color = 'var(--gov-green)';
+            }
+        }
+
+        function confirmAction() {
+            alert(`Zarejestrowano oficjalny status "${currentActionType}" dla podmiotu: ${currentTarget}. Sprawa została przekierowana do archiwum klarowności.`);
+            closeModal('actionModal');
+        }
+    </script>
+</body>
+</html>
